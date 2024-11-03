@@ -1,0 +1,39 @@
+name: Update files in data/foo on PR merge
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for changes in data/foo
+        id: check_changes
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q '^data/foo/'; then
+            echo "changes=true" >> $GITHUB_ENV
+          else
+            echo "changes=false" >> $GITHUB_ENV
+          fi
+
+      - name: Make changes to files
+        if: env.changes == 'true'
+        run: |
+          # ここにファイルを修正するスクリプトを記述します
+          echo "Making changes to files in data/foo"
+          # 例: sedコマンドでファイルを修正
+          sed -i 's/old_text/new_text/g' data/foo/*
+
+      - name: Commit and push changes
+        if: env.changes == 'true'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/foo/*
+          git commit -m "Auto-update files in data/foo"
+          git push origin main
