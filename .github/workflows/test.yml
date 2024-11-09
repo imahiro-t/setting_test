@@ -3,7 +3,7 @@ name: Update files in data/foo on PR merge
 on:
   push:
     branches:
-      - main
+      - test1
 
 jobs:
   update-files:
@@ -17,7 +17,7 @@ jobs:
           # ここにファイルを修正するスクリプトを記述します
           echo "Making changes to files in data/foo"
           # 例: sedコマンドでファイルを修正
-          sed -i 's/old_text/new_text/g' data/foo/*
+          # sed -i 's/old_text/new_text/g' data/foo/*
 
       - name: Commit and push changes
         run: |
